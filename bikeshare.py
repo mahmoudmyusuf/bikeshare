@@ -46,6 +46,7 @@ def get_filters():
         day=input('please, Enter the name of the Day to filter with:').title()
 
         if day in ['All', 'Sunday', 'Monday', 'Tuesday' ,'Wednesday','Thursday','Friday','Saturday']:
+            # For optional view of raw data
             print('\n* Do you like to see some overview for the raw data before filtering?')
             raw_data=input('Please, Enter yes if you like:').lower()
             
@@ -68,7 +69,7 @@ def load_data(city, month, day,raw_data ):
         df - Pandas DataFrame containing city data filtered by month and day
     """
 
-
+     #1. Read data for selected city
     df=pd.read_csv(CITY_DATA[city])
 
     if raw_data.lower() in ['yes','y']:
@@ -123,7 +124,7 @@ def time_stats(df):
     print('\n    1. Calculating The Most Frequent Times of Travel...\n')
     start_time = time.time()
 
-    # display the most common month
+    # display the most common month only if no filter on month
     if df.month.value_counts().count()==1:
         print('Please, remove month filter to display the most frequent month in the selected data')
     else:
@@ -131,7 +132,7 @@ def time_stats(df):
        'total of {} trips.'.format(df.month.value_counts().reset_index()['index'][0],
        df.month.value_counts().reset_index()['month'][0]))
 
-    # display the most common day of week
+    # display the most common day of week if no filter on day
     if df.week_day.value_counts().count()==1:
         print('Please, remove day filter to display the most frequent day in the selected data')
     else:
@@ -208,14 +209,14 @@ def user_stats(df):
     print('Number of different User Types are:\n')
     print(df['User Type'].value_counts(),'\n')
 
-    # Display counts of gender
+    # Display counts of gender of applicable
     if 'Gender' in list(df.columns):
         print('Counts for gender are:\n')
         print(df['Gender'].value_counts(),'\n')
     else:
         print('Gender data is not available for this data')
 
-    # Display earliest, most recent, and most common year of birth
+    # Display earliest, most recent, and most common year of birth if applicable
     if 'Birth Year' in list(df.columns):
         print('Statistics for Birth Year are:\n')
         print('The earliest year of birth is {:.0f}'.format(df['Birth Year'].min()))
@@ -241,7 +242,8 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
-
+        
+        # resume getting statistics or exit
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
             break
